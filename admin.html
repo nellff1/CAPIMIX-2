@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Lançar Partida</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>CS2 <span>ADMIN</span></h1>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Lançar Resultados do Mix</h2>
+      <p class="subtitle">Selecione os 10 jogadores que participaram e insira os dados da partida.</p>
+      
+      <div id="adminPlayers" class="player-grid"></div>
+      <p id="adminCount">0/10 Selecionados</p>
+    </section>
+
+    <section class="panel" id="statsPanel" style="display: none;">
+      <h2>Estatísticas da Partida</h2>
+      
+      <div class="teams-container" style="gap: 40px;">
+        <div class="team-card team-a" style="overflow: visible;">
+          <div class="team-header">Time A (Vencedor? <input type="radio" name="winner" value="A" checked>)</div>
+          <table class="ranking-table" id="tableTimeA">
+            <thead><tr><th>Jogador</th><th>Kills</th><th>Deaths</th><th>Rating</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        
+        <div class="team-card team-b" style="overflow: visible;">
+          <div class="team-header">Time B (Vencedor? <input type="radio" name="winner" value="B">)</div>
+          <table class="ranking-table" id="tableTimeB">
+            <thead><tr><th>Jogador</th><th>Kills</th><th>Deaths</th><th>Rating</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <button id="btnGerarCodigo" class="btn-primary" style="margin-top: 20px; width: 100%;">Gerar Novo data.js</button>
+    </section>
+
+    <section class="panel" id="resultPanel" style="display: none;">
+      <h2>Copie e cole no seu data.js</h2>
+      <textarea id="codigoGerado" readonly style="width: 100%; height: 300px; font-family: monospace;"></textarea>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

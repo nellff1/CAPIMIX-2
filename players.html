@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS2 Mix Lobby - Jogadores</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar"> 
+    <div class="topbar-left">
+      <img src="images/logo.png" alt="CS2 Logo" class="topbar-logo">
+    </div>
+    <div class="topbar-center">
+      <h1>CS2 <span>CAPIMIX</span></h1>
+    </div>
+    <div class="topbar-right">
+      <button id="btnReset" class="btn-primary">Reset All</button>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="players.html">Players</a></li>
+      <li><a href="match_history.html">Match History</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    <section class="panel">
+      <h2>Todos os Jogadores</h2>
+      <p class="subtitle">Estatísticas detalhadas de cada jogador.</p>
+      <div id="playerDetailGrid" class="player-detail-grid">
+        <!-- Player cards will be rendered here by JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

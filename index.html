@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS2 Mix Lobby</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Visual feedback for selected items */
+    .player-card.selected {
+      background-color: #2e7d32; /* Green */
+      border: 2px solid #66bb6a;
+    }
+    .map-card.banned {
+      background-color: #b71c1c; /* Red */
+      opacity: 0.3;
+    }
+    .map-card.picked {
+      background-color: #1565c0; /* Blue */
+      border: 2px solid #42a5f5;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar"> 
+    <div class="topbar-left">
+      <img src="images/logo.png" alt="CS2 Logo" class="topbar-logo">
+    </div>
+    <div class="topbar-center">
+      <h1>CS2 <span>CAPIMIX</span></h1>
+    </div>
+    <div class="topbar-right">
+      <button id="btnReset" class="btn-primary">Reset All</button>
+    </div>
+  </header>
+
+  <nav class="main-nav">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="players.html">Players</a></li>
+      <li><a href="match_history.html">Match History</a></li>
+    </ul>
+  </nav>
+
+
+  <main class="container">
+    
+    <section class="panel">
+      <h2>1. Selecionar Jogadores (10)</h2>
+      <p class="subtitle">Clica nos jogadores para os adicionar ao lobby.</p>
+      <div id="playerRoster" class="player-grid">
+        </div>
+      <div class="action-bar">
+        <span id="playerCount">0/10 Selecionados</span>
+        <button id="btnGerarEquipas" class="btn-primary" disabled>Gerar Equipas Balanceadas</button>
+      </div>
+    </section>
+
+    <section class="panel" id="teamsPanel" style="display: none;">
+      <h2>2. Equipas</h2>
+      <div class="teams-container">
+        <div class="team-card team-a">
+          <div class="team-header">Equipa A</div>
+          <ul id="equipa1List"></ul>
+        </div>
+        <div class="team-card team-b">
+          <div class="team-header">Equipa B</div>
+          <ul id="equipa2List"></ul>
+        </div>
+      </div>
+      <div id="teamControls" style="margin-top: 20px; text-align: center;">
+        <!-- The reshuffle button will be inserted here by JavaScript -->
+      </div>
+    </section>
+
+    <section class="panel" id="vetoPanel" style="display: none;">
+      <h2>3. Veto de Mapas</h2>
+      <div class="veto-status" id="vetoStatus">A aguardar início...</div>
+      <div class="maps-grid" id="mapsGrid">
+        </div>
+      <div class="veto-log" id="vetoLog"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Ranking Geral</h2>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('winloss', event)">Vitórias / Derrotas</button>
+        <button class="tab-btn" onclick="showTab('kdr', event)">KDR</button>
+        <button class="tab-btn" onclick="showTab('rating', event)">Rating 2.0</button>
+      </div>
+      
+      <div class="tab-content">
+        <table class="ranking-table">
+          <thead>
+            <tr id="tableHeader">
+              </tr>
+          </thead>
+          <tbody id="tableBody">
+            </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
