@@ -8,6 +8,14 @@ function getLvlColor(lvl) {
   return "var(--lvl-red)";
 }
 
+// New function for rating colors
+function getRatingColor(rating) {
+  if (rating >= 1.2) return "var(--lvl-green)"; // Excellent rating
+  if (rating >= 1.0) return "var(--lvl-yellow)"; // Good/Average rating
+  if (rating >= 0.8) return "var(--lvl-orange)"; // Below average rating
+  return "var(--lvl-red)"; // Poor rating
+}
+
 // 1. RENDERIZAR JOGADORES NO LOBBY
 function renderLobby() {
   const container = document.getElementById("playerRoster");
@@ -29,9 +37,11 @@ function renderLobby() {
 // New function for players.html
 function renderPlayersPage() {
   const playerDetailGrid = document.getElementById("playerDetailGrid");
-  if (!playerDetailGrid) return; // Only run if on players.html
+  if (!playerDetailGrid) return;
 
   playerDetailGrid.innerHTML = ""; // Clear existing content
+
+  if (!dbPlayers || dbPlayers.length === 0) return;
 
   dbPlayers.forEach(p => {
     const card = document.createElement("div");
@@ -39,18 +49,19 @@ function renderPlayersPage() {
 
     // Calculate stats
     const kdr = p.deaths > 0 ? (p.kills / p.deaths).toFixed(2) : p.kills.toFixed(2);
-    const winRate = p.partidas > 0 ? ((p.vitorias / p.partidas) * 100).toFixed(0) : 0;
-    const avgRating = p.partidas > 0 ? (p.sumRating / p.partidas).toFixed(2) : 0;
+    const winRate = p.partidas > 0 ? ((p.vitorias / p.partidas) * 100).toFixed(0) : 0; // Display as string
+    const avgRatingNum = p.partidas > 0 ? (p.sumRating / p.partidas) : 0; // Numeric value for color function
+    const avgRatingDisplay = avgRatingNum.toFixed(2); // Formatted string for display
 
     // Placeholder image - you'd replace 'placeholder_player.jpg' with actual player images
     // You might add a 'photo' property to your dbPlayers objects: { nome: "nell", ..., photo: "nell.jpg" }
-    // For now, using a generic placeholder. You should create an 'images/placeholder_player.jpg'
+    // For now, using a generic placeholder. You should create an 'images/placeholder_player.jpg' or similar.
     const imageSrc = `images/placeholder_player.jpg`; 
 
     card.innerHTML = `
       <div class="player-detail-header">${p.nome}</div>
       <div class="player-detail-image-container">
-        <img src="${imageSrc}" alt="${p.nome}">
+        <img src="${imageSrc}" alt="${p.nome}" onerror="this.style.display='none'; this.parentElement.style.backgroundColor='#2a2d35'">
         <div class="player-detail-image-overlay"></div>
         <div class="player-detail-lvl-badge" style="background: ${getLvlColor(p.lvl)};">${p.lvl}</div>
       </div>
@@ -59,7 +70,7 @@ function renderPlayersPage() {
         <div class="stat-item"><span class="stat-label">Derrotas</span><span class="stat-value">${p.derrotas}</span></div>
         <div class="stat-item"><span class="stat-label">Win %</span><span class="stat-value">${winRate}%</span></div>
         <div class="stat-item"><span class="stat-label">KDR</span><span class="stat-value">${kdr}</span></div>
-        <div class="stat-item"><span class="stat-label">Rating 2.0</span><span class="stat-value">${avgRating}</span></div>
+        <div class="stat-item prominent-rating"><span class="stat-label">Rating 2.0</span><span class="stat-value" style="color: ${getRatingColor(avgRatingNum)};">${avgRatingDisplay}</span></div>
         <div class="stat-item"><span class="stat-label">Partidas</span><span class="stat-value">${p.partidas}</span></div>
       </div>
     `;
@@ -162,7 +173,20 @@ document.getElementById("btnGerarEquipas").addEventListener("click", () => {
       reshuffleBtn.style.marginRight = "10px"; // Add some spacing
       teamControls.appendChild(reshuffleBtn);
     }
-    reshuffleBtn.onclick = generateAndRenderTeams; // Attach handler
+    reshuffleBtn.onclick = () => {
+      generateAndRenderTeams();
+      iniciarVeto();
+    };
+
+    let resetMapsBtn = document.getElementById("btnResetMaps");
+    if (!resetMapsBtn) {
+      resetMapsBtn = document.createElement("button");
+      resetMapsBtn.id = "btnResetMaps";
+      resetMapsBtn.className = "btn-primary";
+      resetMapsBtn.textContent = "Reset Maps";
+      teamControls.appendChild(resetMapsBtn);
+    }
+    resetMapsBtn.onclick = iniciarVeto;
   }
 });
 
@@ -255,6 +279,11 @@ function resetApp() {
   if (reshuffleBtn && reshuffleBtn.parentNode) {
     reshuffleBtn.parentNode.removeChild(reshuffleBtn);
   }
+
+  const resetMapsBtn = document.getElementById("btnResetMaps");
+  if (resetMapsBtn && resetMapsBtn.parentNode) {
+    resetMapsBtn.parentNode.removeChild(resetMapsBtn);
+  }
 }
 
 
@@ -309,15 +338,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const resetButton = document.getElementById("btnReset");
 
   // Logic for index.html
-  if (document.getElementById("playerRoster")) {
+  const playerRoster = document.getElementById("playerRoster");
+  if (playerRoster) {
     renderLobby();
     showTab('winloss');
     if (resetButton) {
       resetButton.addEventListener("click", resetApp); // Call specific resetApp for index.html
     }
   }
+
   // Logic for players.html
-  else if (document.getElementById("playerDetailGrid")) { // Use else if to ensure only one branch runs
+  const playerDetailGrid = document.getElementById("playerDetailGrid");
+  if (playerDetailGrid) {
     renderPlayersPage();
     if (resetButton) {
       resetButton.addEventListener("click", () => location.reload()); // Simple reload for players.html

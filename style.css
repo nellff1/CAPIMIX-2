@@ -288,6 +288,22 @@ h2 { margin-top: 0; font-size: 18px; color: var(--text-main); border-bottom: 1px
 .stat-label { color: var(--text-muted); font-size: 0.9em; }
 .stat-value { font-weight: bold; font-size: 1em; }
 
+/* Styles for the prominent rating stat */
+.player-detail-card .prominent-rating {
+  background-color: var(--bg-hover); /* Slightly different background */
+  padding: 8px 15px; /* More padding */
+  margin: 5px -15px; /* Extend to edges of padding within the card */
+  border-radius: 5px;
+  font-size: 1.2em; /* Larger font for the whole item */
+  font-weight: bold;
+  border-top: 1px solid var(--border); /* Add top border */
+  border-bottom: 1px solid var(--border); /* Keep bottom border */
+}
+.player-detail-card .prominent-rating .stat-value {
+  font-size: 1.3em; /* Even larger for the value itself */
+  font-weight: 900; /* Extra bold */
+}
+
 .team-a .team-header { background: #1e3a8a; } /* Azul */
 .team-b .team-header { background: #7f1d1d; } /* Vermelho */
 .team-card ul { list-style: none; padding: 0; margin: 0; }
