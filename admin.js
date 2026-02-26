@@ -53,6 +53,11 @@ function renderInputTables() {
 document.getElementById("btnGerarCodigo").addEventListener("click", () => {
   const winner = document.querySelector('input[name="winner"]:checked').value;
   
+  // Prompt for match details to generate history
+  const mapName = prompt("Qual foi o mapa jogado?", "Mirage");
+  const scoreA = prompt("Pontos Time A:", "13");
+  const scoreB = prompt("Pontos Time B:", "0");
+  
   // Fazer uma cópia profunda do banco atual
   let newDb = JSON.parse(JSON.stringify(dbPlayers));
 
@@ -73,12 +78,39 @@ document.getElementById("btnGerarCodigo").addEventListener("click", () => {
     else dbPlayer.derrotas += 1;
   });
 
-  // Gerar o texto formatado
+  // 1. Gerar o texto formatado para data.js
   let jsCode = `// data.js\nconst dbPlayers = [\n`;
   newDb.forEach(p => {
     jsCode += `  { nome: "${p.nome}", steamId: "${p.steamId}", lvl: ${p.lvl}, partidas: ${p.partidas}, vitorias: ${p.vitorias}, derrotas: ${p.derrotas}, kills: ${p.kills}, deaths: ${p.deaths}, sumRating: ${p.sumRating.toFixed(1)} },\n`;
   });
   jsCode += `];`;
+
+  // 2. Gerar o objeto para matchesData.js
+  const teamAData = selectedForMatch.slice(0, 5).map(p => {
+    const k = parseInt(document.getElementById(`k_${p.nome}`).value) || 0;
+    const d = parseInt(document.getElementById(`d_${p.nome}`).value) || 0;
+    const r = parseFloat(document.getElementById(`r_${p.nome}`).value) || (d > 0 ? k/d : k);
+    return `{ nome: "${p.nome}", kills: ${k}, deaths: ${d}, rating: ${r.toFixed(2)} }`;
+  });
+
+  const teamBData = selectedForMatch.slice(5, 10).map(p => {
+    const k = parseInt(document.getElementById(`k_${p.nome}`).value) || 0;
+    const d = parseInt(document.getElementById(`d_${p.nome}`).value) || 0;
+    const r = parseFloat(document.getElementById(`r_${p.nome}`).value) || (d > 0 ? k/d : k);
+    return `{ nome: "${p.nome}", kills: ${k}, deaths: ${d}, rating: ${r.toFixed(2)} }`;
+  });
+
+  jsCode += `\n\n// COPY THIS INTO matchesData.js matchesHistory array:\n`;
+  jsCode += `/*
+  {
+    id: Date.now(),
+    date: "${new Date().toLocaleString()}",
+    map: "${mapName}",
+    scoreA: ${scoreA}, scoreB: ${scoreB}, winner: "${winner}",
+    teamA: [ ${teamAData.join(", ")} ],
+    teamB: [ ${teamBData.join(", ")} ]
+  },
+  */`;
 
   document.getElementById("resultPanel").style.display = "block";
   document.getElementById("codigoGerado").value = jsCode;

@@ -94,6 +94,41 @@ function togglePlayer(player, element) {
   document.getElementById("btnGerarEquipas").disabled = selectedPlayers.length !== 10;
 }
 
+function addNewPlayer() {
+  const nameInput = document.getElementById("newPlayerName");
+  const lvlInput = document.getElementById("newPlayerLvl");
+  
+  const name = nameInput.value.trim();
+  const lvl = parseInt(lvlInput.value);
+  
+  if (!name) return alert("Por favor, insira um nome.");
+  if (isNaN(lvl) || lvl < 1 || lvl > 10) return alert("Nível deve ser entre 1 e 10.");
+  
+  // Check for duplicates
+  if (dbPlayers.some(p => p.nome.toLowerCase() === name.toLowerCase())) {
+    return alert("Jogador já existe!");
+  }
+  
+  const newPlayer = {
+    nome: name,
+    steamId: "custom_" + Date.now(),
+    lvl: lvl,
+    partidas: 0,
+    vitorias: 0,
+    derrotas: 0,
+    kills: 0,
+    deaths: 0,
+    sumRating: 0
+  };
+  
+  dbPlayers.push(newPlayer);
+  renderLobby();
+  
+  // Clear inputs
+  nameInput.value = "";
+  lvlInput.value = "5";
+}
+
 // Fisher-Yates (Knuth) shuffle algorithm
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -333,6 +368,72 @@ function showTab(type, event) {
   }
 }
 
+// 5. RENDER MATCH HISTORY
+function renderMatchHistory() {
+  const container = document.getElementById("matchHistoryContainer");
+  if (!container || typeof matchesHistory === 'undefined') return;
+
+  container.innerHTML = "";
+
+  // Sort by ID descending (newest first)
+  const sortedMatches = [...matchesHistory].sort((a, b) => b.id - a.id);
+
+  sortedMatches.forEach(match => {
+    const card = document.createElement("div");
+    card.className = "match-card";
+
+    const isAWinner = match.winner === "A";
+    const classA = isAWinner ? "team-win" : "team-loss";
+    const classB = !isAWinner ? "team-win" : "team-loss";
+
+    const renderTableRows = (players) => {
+      return players.map(p => {
+        const kdDiff = p.kills - p.deaths;
+        const kdClass = kdDiff >= 0 ? "kd-positive" : "kd-negative";
+        const kdSign = kdDiff > 0 ? "+" : "";
+        return `
+          <tr>
+            <td>${p.nome}</td>
+            <td>${p.kills}</td>
+            <td>${p.deaths}</td>
+            <td class="${kdClass}">${kdSign}${kdDiff}</td>
+            <td>${p.rating ? p.rating.toFixed(2) : "-"}</td>
+          </tr>
+        `;
+      }).join("");
+    };
+
+    card.innerHTML = `
+      <div class="match-header">
+        <div class="match-info">
+          <span class="match-map">${match.map}</span>
+          <span class="match-date">${match.date}</span>
+        </div>
+        <div class="match-score-display">
+          <span class="score-a">${match.scoreA}</span><span class="score-separator">:</span><span class="score-b">${match.scoreB}</span>
+        </div>
+      </div>
+      <div class="match-content">
+        <div class="match-team ${classA}">
+          <div class="team-header-row">Team A ${isAWinner ? "(WIN)" : ""}</div>
+          <table class="match-table">
+            <thead><tr><th>Player</th><th>K</th><th>D</th><th>+/-</th><th>R</th></tr></thead>
+            <tbody>${renderTableRows(match.teamA)}</tbody>
+          </table>
+        </div>
+        <div class="match-team ${classB}">
+          <div class="team-header-row">Team B ${!isAWinner ? "(WIN)" : ""}</div>
+          <table class="match-table">
+            <thead><tr><th>Player</th><th>K</th><th>D</th><th>+/-</th><th>R</th></tr></thead>
+            <tbody>${renderTableRows(match.teamB)}</tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
 // Iniciar a aplicação
 document.addEventListener("DOMContentLoaded", () => {
   const resetButton = document.getElementById("btnReset");
@@ -345,6 +446,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (resetButton) {
       resetButton.addEventListener("click", resetApp); // Call specific resetApp for index.html
     }
+    const btnAddPlayer = document.getElementById("btnAddPlayer");
+    if (btnAddPlayer) {
+      btnAddPlayer.addEventListener("click", addNewPlayer);
+    }
   }
 
   // Logic for players.html
@@ -354,5 +459,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (resetButton) {
       resetButton.addEventListener("click", () => location.reload()); // Simple reload for players.html
     }
+  }
+
+  // Logic for match_history.html
+  if (document.getElementById("matchHistoryContainer")) {
+    renderMatchHistory();
   }
 });
