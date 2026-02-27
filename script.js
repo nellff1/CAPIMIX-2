@@ -16,6 +16,26 @@ function getRatingColor(rating) {
   return "var(--lvl-red)"; // Poor rating
 }
 
+// Persistence: Load/Save custom players to LocalStorage
+function loadCustomPlayers() {
+  const stored = localStorage.getItem('capimix_custom_players');
+  if (stored) {
+    const customPlayers = JSON.parse(stored);
+    customPlayers.forEach(p => {
+      if (!dbPlayers.some(dbP => dbP.nome.toLowerCase() === p.nome.toLowerCase())) {
+        dbPlayers.push(p);
+      }
+    });
+  }
+}
+
+function saveCustomPlayer(player) {
+  const stored = localStorage.getItem('capimix_custom_players');
+  const customPlayers = stored ? JSON.parse(stored) : [];
+  customPlayers.push(player);
+  localStorage.setItem('capimix_custom_players', JSON.stringify(customPlayers));
+}
+
 // 1. RENDERIZAR JOGADORES NO LOBBY
 function renderLobby() {
   const container = document.getElementById("playerRoster");
@@ -122,6 +142,7 @@ function addNewPlayer() {
   };
   
   dbPlayers.push(newPlayer);
+  saveCustomPlayer(newPlayer);
   renderLobby();
   
   // Clear inputs
@@ -436,6 +457,8 @@ function renderMatchHistory() {
 
 // Iniciar a aplicação
 document.addEventListener("DOMContentLoaded", () => {
+  loadCustomPlayers();
+
   const resetButton = document.getElementById("btnReset");
 
   // Logic for index.html

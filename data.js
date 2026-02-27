@@ -9,7 +9,7 @@ const dbPlayers = [
   { nome: "TRAVAA", steamId: "777", lvl: 6, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
   { nome: "Lincoln", steamId: "888", lvl: 5, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
   { nome: "Dini", steamId: "999", lvl: 6, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
-  { nome: "Lincão", steamId: "101", lvl: 5, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
+  { nome: "Lincão", steamId: "101", lvl: 8, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
   { nome: "Rocha", steamId: "101", lvl: 7, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
   { nome: "Toinho", steamId: "101", lvl: 7, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },
   { nome: "Th", steamId: "101", lvl: 6, partidas: 0, vitorias: 0, derrotas: 0, kills: 0, deaths: 0, sumRating: 0 },

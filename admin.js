@@ -1,6 +1,17 @@
 let selectedForMatch = [];
 
 function renderAdminLobby() {
+  // Load custom players from LocalStorage so they appear in Admin too
+  const stored = localStorage.getItem('capimix_custom_players');
+  if (stored) {
+    const customPlayers = JSON.parse(stored);
+    customPlayers.forEach(p => {
+      if (!dbPlayers.some(dbP => dbP.nome.toLowerCase() === p.nome.toLowerCase())) {
+        dbPlayers.push(p);
+      }
+    });
+  }
+
   const container = document.getElementById("adminPlayers");
   dbPlayers.forEach(p => {
     const div = document.createElement("div");
